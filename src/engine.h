@@ -17,8 +17,21 @@ void value_free(Value *v);
 
 // forward
 Value *value_add(Value *a, Value *b);
+Value *value_mul(Value *a, Value *b);
+Value *value_pow(Value *a, float power);
+Value *value_relu(Value *a);
 
 // backward
 void value_add_backward(Value *v);
+void value_mul_backward(Value *v);
+void value_pow_backward(Value *v);
+void value_relu_backward(Value *v);
 
+// use combination
+Value *value_neg(Value *a);
+Value *value_sub(Value *a, Value *b);
+Value *value_div(Value *a, Value *b);
+
+// backpropagation
+void backward(Value *v);
 #endif
