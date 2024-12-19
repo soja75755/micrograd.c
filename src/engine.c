@@ -111,12 +111,44 @@ Value *value_div(Value *a, Value *b)
     return value_mul(a, value_pow(b, -1));
 }
 
+void build_topo(Value* v, Value*** sorted, int* size, int* capacity) {
+    // recursively process previous
+    for (int i = 0; i < v->_prev_count; i++) {
+        if (v->_prev[i]->_backward) {
+            build_topo(v->_prev[i], sorted, size, capacity);
+        }
+    }
+
+    // check if node is already in sorted list
+    for (int i = 0; i < *size; i++) {
+        if (*sorted[i] == v) return;
+    }
+
+    // expand capacity if needed
+    if (*size >= *capacity) {
+        *capacity *= 2;
+        *sorted = realloc(*sorted, *capacity * sizeof(Value*));
+    }
+
+    // add node to sorted list
+    (*sorted)[(*size)++] = v;
+
+}
 void backward(Value *v)
 {
-    // gradient
+    int size = 0;
+    int capacity = 10;
+    Value** topo = malloc(capacity * sizeof(Value*));
+    build_topo(v, &topo, &size, &capacity);
+
+    // set gradient
     v->grad = 1;
 
-    if (v->_backward) {
-        v->_backward(v);
+    for (int i = size -1; i >= 0; i--) {
+        if (topo[i]->_backward) {
+            topo[i]->_backward(topo[i]);
+        }
     }
+
+    free(topo);
 }

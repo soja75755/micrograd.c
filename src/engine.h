@@ -33,5 +33,6 @@ Value *value_sub(Value *a, Value *b);
 Value *value_div(Value *a, Value *b);
 
 // backpropagation
+void build_topo(Value *v, Value ***sorted, int *size, int *capacity);
 void backward(Value *v);
 #endif
